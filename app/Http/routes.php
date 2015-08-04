@@ -12,14 +12,37 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('back.layouts.base');
 });
 
-// Authentication routes...
-Route::get('auth/login', 'Auth\AuthController@getLogin');
-Route::post('auth/login', 'Auth\AuthController@postLogin');
-Route::get('auth/logout', 'Auth\AuthController@getLogout');
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin::'], function () {
 
-// Registration routes...
-Route::get('auth/register', 'Auth\AuthController@getRegister');
-Route::post('auth/register', 'Auth\AuthController@postRegister');
+    # Dashboard
+    Route::controller('dashboard', 'DashboardController', [
+        'getIndex' => 'dashboard'
+    ]);
+
+    # Setting
+    Route::controller('setting', 'SettingController', [
+        'getIndex' => 'setting',
+    ]);
+
+    # Post
+    Route::resource('post', 'PostController', [
+        'names' => [
+            'index'  => 'post.index',
+            'create' => 'post.create',
+            'edit'   => 'post.edit',
+            'store'  => 'post.store',
+            'update' => 'post.update'
+        ]
+    ]);
+
+    Route::controller('fileUpload', 'FilesUploadController', [
+        'postSetting' => 'file.setting'
+    ]);
+
+    Route::get('ckfinder', function () {
+        return view('ckfinder.ckfinder');
+    });
+});
